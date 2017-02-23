@@ -1,6 +1,5 @@
 package com.betamedia.framework.web.pages.common;
 
-import com.betamedia.framework.web.pages.tp.TPPages;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -8,15 +7,15 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 /**
  * Created by mbelyaev on 2/17/17.
  */
-public interface Location {
-    By getLocator();
+public abstract class Location extends AbstractPageService{
+    abstract public By getLocator();
 
-    default void waitFor() {
-        WebDriverWait wait = new WebDriverWait(TPPages.getDriver(), 60);
+    public void waitFor() {
+        WebDriverWait wait = new WebDriverWait(driver, 60);
         wait.until(ExpectedConditions.elementToBeClickable(getLocator()));
     }
 
-    default boolean isAt() {
-        return TPPages.getDriver().findElements(getLocator()).size() > 0;
+    public boolean isAt() {
+        return driver.findElements(getLocator()).size() > 0;
     }
 }

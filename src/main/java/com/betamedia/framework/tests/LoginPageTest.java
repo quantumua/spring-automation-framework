@@ -1,6 +1,9 @@
 package com.betamedia.framework.tests;
 
-import org.openqa.selenium.lift.WebDriverTestContext;
+
+import org.testng.annotations.Test;
+
+import static org.testng.Assert.assertTrue;
 
 /**
  * @author Maksym Tsybulskyy
@@ -9,8 +12,12 @@ import org.openqa.selenium.lift.WebDriverTestContext;
 
 public class LoginPageTest extends WebDriverTest{
 
-    private String username;
-    private String password;
+    @Test
+    public void testWithContext() {
+        pageService.loginPage().goTo().loginPage().login("vasichka", "123123");
+        pageService.disclaimerNotification().accept();
+        assertTrue(pageService.topNavigationPage().isLoggedIn());
+    }
 
    /* @Test
     @TestProperties(name = "login with externally set username/password: username=${username}, password=${password}",

@@ -1,8 +1,6 @@
 package com.betamedia.framework.web.pages.tp.login.impl;
 
-import com.betamedia.framework.web.pages.common.AbstractPage;
 import com.betamedia.framework.web.pages.common.annotation.StoredId;
-import com.betamedia.framework.web.pages.tp.TPPages;
 import com.betamedia.framework.web.pages.tp.login.LoginPage;
 import org.openqa.selenium.By;
 
@@ -10,7 +8,7 @@ import org.openqa.selenium.By;
  * @author Maksym Tsybulskyy
  *         Date: 2/15/17.
  */
-public class LoginPageImpl extends AbstractPage implements LoginPage {
+public class LoginPageImpl extends LoginPage {
 
     @StoredId("usernameField")
     private By usernameField;
@@ -29,7 +27,7 @@ public class LoginPageImpl extends AbstractPage implements LoginPage {
 
     @Override
     public LoginPage goTo() {
-        TPPages.topNavigationPage().logIn();
+        topNavigationPage().logIn();
         return this;
     }
 

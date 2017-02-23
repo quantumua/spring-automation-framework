@@ -1,16 +1,14 @@
 package com.betamedia.framework.web.pages.tp.login.impl;
 
-import com.betamedia.framework.web.pages.common.AbstractPage;
 import com.betamedia.framework.web.pages.common.annotation.StoredId;
 import com.betamedia.framework.web.pages.tp.login.DisclaimerNotification;
 import org.openqa.selenium.By;
 
-import java.util.List;
 
 /**
  * Created by mbelyaev on 2/16/17.
  */
-public class DisclaimerNotificationImpl extends AbstractPage implements DisclaimerNotification {
+public class DisclaimerNotificationImpl extends DisclaimerNotification {
     @StoredId("disclaimerCheckbox")
     private By disclaimerCheckbox;
     @StoredId("disclaimerSubmitBtn")

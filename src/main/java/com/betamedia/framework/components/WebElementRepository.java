@@ -1,4 +1,4 @@
-package com.betamedia.framework.components.impl;
+package com.betamedia.framework.components;
 
 import com.betamedia.framework.web.pages.common.entities.PageElementLocation;
 import com.opencsv.CSVReader;

@@ -1,8 +1,10 @@
 package com.betamedia.framework.tests;
 
 
-import com.betamedia.framework.components.impl.PageServiceImpl;
-import com.betamedia.framework.web.pages.tp.TPPages;
+import com.betamedia.framework.Application;
+import com.betamedia.framework.components.WebElementRepository;
+import com.betamedia.framework.web.pages.common.impl.PageServiceImpl;
+import org.openqa.selenium.WebDriver;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
 
@@ -12,15 +14,15 @@ import org.testng.annotations.BeforeTest;
  */
 public class WebDriverTest {
 
-    private PageServiceImpl pageService;
+    protected PageServiceImpl pageService;
 
     @BeforeTest
-    public void openBrowser() throws Exception {
-        TPPages.openBrowser();
+    public void setUp() throws Exception {
+        pageService = new PageServiceImpl(Application.getBean(WebDriver.class), Application.getBean(WebElementRepository.class));
     }
 
     @AfterTest
-    public void closeBrowser() throws Exception {
-        TPPages.closeBrowser();
+    public void tearDown() throws Exception {
+        pageService.closeBrowser();
     }
 }

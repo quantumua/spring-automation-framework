@@ -1,6 +1,6 @@
 package com.betamedia.framework.web.pages.tp.navigation;
 
-import com.betamedia.framework.web.pages.common.AbstractPage;
+import com.betamedia.framework.web.pages.common.AbstractPageService;
 import com.betamedia.framework.web.pages.common.annotation.StoredId;
 import org.openqa.selenium.By;
 
@@ -8,7 +8,7 @@ import org.openqa.selenium.By;
  * @author Maksym Tsybulskyy
  *         Date: 2/15/17.
  */
-public class TopNavigationPageImpl extends AbstractPage implements TopNavigationPage {
+public class TopNavigationPageImpl extends AbstractPageService implements TopNavigationPage {
 
     @StoredId("loginBtn")
     private By loginBtn;
