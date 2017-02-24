@@ -1,4 +1,4 @@
-package com.betamedia.framework.web.pages.common;
+package com.betamedia.framework.web.pages.factory;
 
 import com.betamedia.framework.web.pages.common.entities.AbstractPageObject;
 

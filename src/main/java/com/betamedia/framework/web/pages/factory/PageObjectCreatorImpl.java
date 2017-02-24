@@ -1,4 +1,4 @@
-package com.betamedia.framework.web.pages.common;
+package com.betamedia.framework.web.pages.factory;
 
 import com.betamedia.framework.components.WebElementRepository;
 import com.betamedia.framework.web.pages.common.annotation.StoredId;
@@ -15,7 +15,8 @@ import java.lang.reflect.Modifier;
 import java.util.Map;
 
 /**
- * Created by mbelyaev on 2/23/17.
+ * @author Maksym Tsybulskyy
+ *         Date: 2/24/17.
  */
 @Service
 @Scope("prototype")
@@ -53,22 +54,6 @@ public class PageObjectCreatorImpl implements PageObjectCreator{
         }
     }
 
-//    public LoginPage loginPage() {
-//        return getPage(LoginPageImpl.class);
-//    }
-//
-//    public TopNavigationPage topNavigationPage() {
-//        return getPage(TopNavigationPageImpl.class);
-//    }
-//
-//    public DisclaimerNotification disclaimerNotification() {
-//        return getPage(DisclaimerNotificationImpl.class);
-//    }
-//
-//    public LoginErrorNotification loginErrorNotification() {
-//        return getPage(LoginErrorNotificationImpl.class);
-//    }
-//
     public void closeBrowser() {
         driver.quit();
     }
@@ -84,12 +69,4 @@ public class PageObjectCreatorImpl implements PageObjectCreator{
             throw new RuntimeException(e);
         }
     }
-//
-//    private static List<Field> getAllFields(List<Field> fields, Class<?> type) {
-//        fields.addAll(Arrays.asList(type.getDeclaredFields()));
-//        if (type.getSuperclass() != null) {
-//            fields = getAllFields(fields, type.getSuperclass());
-//        }
-//        return fields;
-//    }
 }

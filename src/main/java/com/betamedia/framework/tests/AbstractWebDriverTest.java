@@ -9,7 +9,7 @@ import org.testng.annotations.BeforeMethod;
 /**
  * Created by mbelyaev on 2/21/17.
  */
-public abstract class WebDriverTest<T extends AbstractPageFactory> {
+public abstract class AbstractWebDriverTest<T extends AbstractPageFactory> {
 
     protected T pages;
 

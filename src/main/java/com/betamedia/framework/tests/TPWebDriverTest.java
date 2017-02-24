@@ -1,15 +1,15 @@
 package com.betamedia.framework.tests;
 
-import com.betamedia.framework.Application;
+import com.betamedia.framework.configuration.AppContextHolder;
 import com.betamedia.framework.web.pages.factory.TPPageFactoryImpl;
 
 /**
  * @author Maksym Tsybulskyy
  *         Date: 2/24/17.
  */
-public abstract class TPWebDriverTest extends WebDriverTest<TPPageFactoryImpl> {
+public abstract class TPWebDriverTest extends AbstractWebDriverTest<TPPageFactoryImpl> {
     @Override
     public TPPageFactoryImpl getPageFactory() {
-        return Application.getBean(TPPageFactoryImpl.class);
+        return AppContextHolder.getBean(TPPageFactoryImpl.class);
     }
 }
