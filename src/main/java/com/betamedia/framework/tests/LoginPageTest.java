@@ -10,19 +10,21 @@ import static org.testng.Assert.assertTrue;
  *         Date: 2/15/17.
  */
 
-public class LoginPageTest extends WebDriverTest{
+public class LoginPageTest extends TPWebDriverTest{
 
     @Test
     public void loginTest() {
-        pageService.loginPage().goTo().loginPage().login("vasichka", "123123");
-        pageService.disclaimerNotification().accept();
-        assertTrue(pageService.topNavigationPage().isLoggedIn());
+        pages.topNavigationPage().logIn();
+        pages.loginPage().login("vasichka", "123123");
+        pages.disclaimerNotification().accept();
+        assertTrue(pages.topNavigationPage().isLoggedIn());
     }
 
     @Test
     public void failedLoginTest() {
-        pageService.loginPage().goTo().login("randomname", "randompassword");
-        pageService.loginErrorNotification().dismiss();
+        pages.topNavigationPage().logIn();
+        pages.loginPage().login("randomname", "randompassword");
+        pages.loginErrorNotification().dismiss();
     }
 
    /* @Test

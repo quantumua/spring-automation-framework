@@ -10,7 +10,6 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -30,6 +29,8 @@ public class Application {
     public static ConfigurableApplicationContext context;
 
     public static void main(String[] args) {
+//        args = Arrays.asList("--spring.config.location=driver.properties").toArray(args);
+
         context = SpringApplication.run(Application.class, args);
         ITestNGListener tla = new TestListenerAdapter();
         TestNG testng = new TestNG();
@@ -43,19 +44,25 @@ public class Application {
     @Bean
     @Scope("prototype")
     @ConditionalOnProperty("remote.driver.url")
-    public WebDriver remoteDriver(@Value("${remote.driver.url}") String driverUrl, DesiredCapabilities capabilities) throws MalformedURLException {
-        return new RemoteWebDriver(new URL(driverUrl), capabilities);
+    public WebDriver remoteDriver(@Value("${remote.driver.url}") String driverUrl, @Value("${domain.url}") String domainUrl,
+                                  DesiredCapabilities capabilities) throws MalformedURLException {
+        RemoteWebDriver remoteWebDriver = new RemoteWebDriver(new URL(driverUrl), capabilities);
+        remoteWebDriver.get(domainUrl);
+        return remoteWebDriver;
     }
 
     @Bean
     @Scope("prototype")
     @ConditionalOnMissingBean(name = "remoteDriver")
-    public WebDriver driver(@Value("${chrome.driver.path}") String chromeDriverPath, DesiredCapabilities capabilities) {
+    public WebDriver driver(@Value("${chrome.driver.path}") String chromeDriverPath, @Value("${domain.url}") String domainUrl,
+                            DesiredCapabilities capabilities) {
         //TODO implement embedded ChromeDriverService and its lifecycle management as per ChromeDriver javadoc
         switch (capabilities.getBrowserName()) {
             case BrowserType.CHROME:
                 System.setProperty("webdriver.chrome.driver", chromeDriverPath);
-                return new ChromeDriver();
+                ChromeDriver chromeDriver = new ChromeDriver();
+                chromeDriver.get(domainUrl);
+                return chromeDriver;
             case BrowserType.FIREFOX:
                 return new FirefoxDriver();
             default:

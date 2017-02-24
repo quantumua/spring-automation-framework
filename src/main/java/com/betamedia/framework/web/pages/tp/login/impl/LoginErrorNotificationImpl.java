@@ -1,18 +1,24 @@
 package com.betamedia.framework.web.pages.tp.login.impl;
 
 import com.betamedia.framework.web.pages.common.annotation.StoredId;
+import com.betamedia.framework.web.pages.common.entities.AbstractPageObject;
 import com.betamedia.framework.web.pages.tp.login.LoginErrorNotification;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
 
 /**
  * Created by mbelyaev on 2/17/17.
  */
-public class LoginErrorNotificationImpl extends LoginErrorNotification {
+public class LoginErrorNotificationImpl extends AbstractPageObject implements LoginErrorNotification {
 
     @StoredId("errorNotification")
     private By errorNotification;
     @StoredId("errorCloseBtn")
     private By errorCloseBtn;
+
+    public LoginErrorNotificationImpl(WebDriver webDriver) {
+        super(webDriver);
+    }
 
     @Override
     public By getLocator() {
@@ -21,7 +27,6 @@ public class LoginErrorNotificationImpl extends LoginErrorNotification {
 
     @Override
     public void dismiss() {
-        waitFor();
-        driver.findElement(errorCloseBtn).click();
+        webDriver.findElement(errorCloseBtn).click();
     }
 }

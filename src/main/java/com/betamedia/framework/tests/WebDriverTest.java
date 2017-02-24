@@ -1,28 +1,28 @@
 package com.betamedia.framework.tests;
 
 
-import com.betamedia.framework.Application;
-import com.betamedia.framework.components.WebElementRepository;
-import com.betamedia.framework.web.pages.common.impl.PageServiceImpl;
-import org.openqa.selenium.WebDriver;
-import org.testng.annotations.*;
+import com.betamedia.framework.web.pages.factory.AbstractPageFactory;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
 
 
 /**
  * Created by mbelyaev on 2/21/17.
  */
-public class WebDriverTest {
+public abstract class WebDriverTest<T extends AbstractPageFactory> {
 
-    protected PageServiceImpl pageService;
+    protected T pages;
+
+    public abstract T getPageFactory();
 
     @BeforeMethod
     public void setUp() throws Exception {
-        pageService = new PageServiceImpl(Application.getBean(WebDriver.class), Application.getBean(WebElementRepository.class));
+        pages = getPageFactory();
     }
 
     @AfterMethod
     public void tearDown() throws Exception {
-        pageService.closeBrowser();
+        pages.closeBrowser();
     }
     
 }
