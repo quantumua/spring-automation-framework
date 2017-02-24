@@ -72,7 +72,7 @@ public abstract class AbstractPageService {
     }
 
     public void closeBrowser() {
-        driver.close();
+        driver.quit();
     }
 
     private void setField(Field field, Object object, Object value) {

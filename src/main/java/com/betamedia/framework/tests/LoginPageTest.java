@@ -13,10 +13,16 @@ import static org.testng.Assert.assertTrue;
 public class LoginPageTest extends WebDriverTest{
 
     @Test
-    public void testWithContext() {
+    public void loginTest() {
         pageService.loginPage().goTo().loginPage().login("vasichka", "123123");
         pageService.disclaimerNotification().accept();
         assertTrue(pageService.topNavigationPage().isLoggedIn());
+    }
+
+    @Test
+    public void failedLoginTest() {
+        pageService.loginPage().goTo().login("randomname", "randompassword");
+        pageService.loginErrorNotification().dismiss();
     }
 
    /* @Test

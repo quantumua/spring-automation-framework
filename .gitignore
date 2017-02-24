@@ -3,6 +3,7 @@ target/
 mvnw
 mvnw.cmd
 test-output/
+*~
 
 ### STS ###
 .apt_generated
