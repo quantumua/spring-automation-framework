@@ -27,6 +27,7 @@ public class LoginErrorNotificationImpl extends AbstractPageObject implements Lo
 
     @Override
     public void dismiss() {
+        waitFor();
         webDriver.findElement(errorCloseBtn).click();
     }
 }

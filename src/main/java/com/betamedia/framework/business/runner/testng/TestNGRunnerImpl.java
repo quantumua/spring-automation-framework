@@ -1,12 +1,14 @@
 package com.betamedia.framework.business.runner.testng;
 
 import com.betamedia.framework.business.runner.TestRunner;
-import com.betamedia.framework.tests.LoginPageTest;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.ApplicationArguments;
 import org.springframework.stereotype.Component;
 import org.testng.ITestNGListener;
 import org.testng.TestListenerAdapter;
 import org.testng.TestNG;
-import org.testng.xml.XmlSuite;
+
+import java.util.List;
 
 /**
  * @author Maksym Tsybulskyy
@@ -14,19 +16,27 @@ import org.testng.xml.XmlSuite;
  */
 @Component
 public class TestNGRunnerImpl implements TestRunner {
+
+    @Autowired
+    private ApplicationArguments args;
+
     @Override
-    public boolean isAssignable(String[] args) {
-        return true;
+    public boolean isAssignable() {
+        return !args.getNonOptionArgs().isEmpty();
     }
 
     @Override
-    public void run(String[] args) {
+    public void run() {
+        //read files
         ITestNGListener tla = new TestListenerAdapter();
         TestNG testng = new TestNG();
-        testng.setTestClasses(new Class[]{LoginPageTest.class});
+
+        List<String> xmlNames = args.getNonOptionArgs();
+
+
+        testng.setTestSuites(xmlNames);
+
         testng.addListener(tla);
-        testng.setParallel(XmlSuite.ParallelMode.METHODS);
-        testng.setThreadCount(5);
         testng.run();
     }
 }

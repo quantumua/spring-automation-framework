@@ -1,6 +1,7 @@
 package com.betamedia.framework.tests;
 
 import com.betamedia.framework.configuration.AppContextHolder;
+import com.betamedia.framework.web.pages.factory.AbstractPageFactory;
 import com.betamedia.framework.web.pages.factory.TPPageFactoryImpl;
 
 /**
@@ -8,8 +9,11 @@ import com.betamedia.framework.web.pages.factory.TPPageFactoryImpl;
  *         Date: 2/24/17.
  */
 public abstract class TPWebDriverTest extends AbstractWebDriverTest<TPPageFactoryImpl> {
+
+
     @Override
     public TPPageFactoryImpl getPageFactory() {
         return AppContextHolder.getBean(TPPageFactoryImpl.class);
     }
+
 }

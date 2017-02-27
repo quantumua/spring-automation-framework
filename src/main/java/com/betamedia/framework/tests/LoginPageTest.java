@@ -14,17 +14,17 @@ public class LoginPageTest extends TPWebDriverTest{
 
     @Test
     public void loginTest() {
-        pages.topNavigationPage().logIn();
-        pages.loginPage().login("vasichka", "123123");
-        pages.disclaimerNotification().accept();
-        assertTrue(pages.topNavigationPage().isLoggedIn());
+        pages().topNavigationPage().logIn();
+        pages().loginPage().login("vasichka", "123123");
+        pages().disclaimerNotification().accept();
+        assertTrue(pages().topNavigationPage().isLoggedIn());
     }
 
     @Test
     public void failedLoginTest() {
-        pages.topNavigationPage().logIn();
-        pages.loginPage().login("randomname", "randompassword");
-        pages.loginErrorNotification().dismiss();
+        pages().topNavigationPage().logIn();
+        pages().loginPage().login("randomname", "randompassword");
+        pages().loginErrorNotification().dismiss();
     }
 
    /* @Test

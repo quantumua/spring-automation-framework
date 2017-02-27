@@ -2,6 +2,7 @@ package com.betamedia.framework.business;
 
 import com.betamedia.framework.business.runner.TestRunner;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,9 +18,10 @@ public class RunTestHandlerImpl implements RunTestHandler {
     private List<TestRunner> runners;
 
     @Override
-    public void handle(String[] args) {
-        runners.stream().findFirst()
+    public void handle() {
+        runners.stream().filter(TestRunner::isAssignable)
+                .findFirst()
                 .orElseThrow(() -> new RuntimeException("No corresponding runner"))
-                .run(args);
+                .run();
     }
 }

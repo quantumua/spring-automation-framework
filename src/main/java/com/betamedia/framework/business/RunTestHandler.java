@@ -5,5 +5,5 @@ package com.betamedia.framework.business;
  *         Date: 2/24/17.
  */
 public interface RunTestHandler {
-    void handle(String[] args);
+    void handle();
 }

@@ -6,7 +6,7 @@ package com.betamedia.framework.business.runner;
  */
 public interface TestRunner {
 
-    boolean isAssignable(String[] args);
+    boolean isAssignable();
 
-    void run(String[] args);
+    void run();
 }

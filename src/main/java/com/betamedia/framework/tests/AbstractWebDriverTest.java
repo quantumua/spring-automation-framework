@@ -11,18 +11,22 @@ import org.testng.annotations.BeforeMethod;
  */
 public abstract class AbstractWebDriverTest<T extends AbstractPageFactory> {
 
-    protected T pages;
+    private ThreadLocal<T> pages = new ThreadLocal<>();
 
     public abstract T getPageFactory();
 
     @BeforeMethod
     public void setUp() throws Exception {
-        pages = getPageFactory();
+        pages.set(getPageFactory());
     }
 
     @AfterMethod
     public void tearDown() throws Exception {
-        pages.closeBrowser();
+        pages.get().closeBrowser();
+    }
+
+    public T pages() {
+        return pages.get();
     }
     
 }
