@@ -33,7 +33,6 @@ public class TestNGRunnerImpl implements TestRunner {
 
         List<String> xmlNames = args.getNonOptionArgs();
 
-
         testng.setTestSuites(xmlNames);
 
         testng.addListener(tla);

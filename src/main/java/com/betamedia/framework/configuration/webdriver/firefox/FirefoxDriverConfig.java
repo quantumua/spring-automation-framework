@@ -1,9 +1,10 @@
-package com.betamedia.framework.config.webdriver.firefox;
+package com.betamedia.framework.configuration.webdriver.firefox;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
@@ -25,7 +26,9 @@ public class FirefoxDriverConfig {
     @Bean
     @Scope("prototype")
     @ConditionalOnMissingBean(name = "remoteDriver")
-    public WebDriver driver(DesiredCapabilities capabilities) {
-        return new FirefoxDriver(capabilities);
+    public WebDriver driver(DesiredCapabilities capabilities, @Value("${domain.url}") String domainUrl) {
+        WebDriver driver = new FirefoxDriver(capabilities);
+        driver.get(domainUrl);
+        return driver;
     }
 }

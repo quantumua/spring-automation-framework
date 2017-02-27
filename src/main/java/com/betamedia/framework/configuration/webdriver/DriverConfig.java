@@ -1,4 +1,4 @@
-package com.betamedia.framework.config.webdriver;
+package com.betamedia.framework.configuration.webdriver;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;

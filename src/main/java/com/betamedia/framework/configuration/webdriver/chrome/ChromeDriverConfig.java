@@ -1,4 +1,4 @@
-package com.betamedia.framework.config.webdriver.chrome;
+package com.betamedia.framework.configuration.webdriver.chrome;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriverService;
@@ -18,6 +18,7 @@ import java.io.IOException;
 /**
  * Created by mbelyaev on 2/24/17.
  */
+//TODO externalize parameter constants
 @Configuration
 @ConditionalOnProperty(name = "browser.type", havingValue = BrowserType.CHROME)
 public class ChromeDriverConfig {
@@ -39,7 +40,9 @@ public class ChromeDriverConfig {
     @Bean
     @Scope("prototype")
     @ConditionalOnMissingBean(name = "remoteDriver")
-    public WebDriver driver(ChromeDriverService chromeDriverService, DesiredCapabilities capabilities) {
-        return new RemoteWebDriver(chromeDriverService.getUrl(), capabilities);
+    public WebDriver driver(ChromeDriverService chromeDriverService, DesiredCapabilities capabilities, @Value("${domain.url}") String domainUrl) {
+        WebDriver driver = new RemoteWebDriver(chromeDriverService.getUrl(), capabilities);
+        driver.get(domainUrl);
+        return driver;
     }
 }
