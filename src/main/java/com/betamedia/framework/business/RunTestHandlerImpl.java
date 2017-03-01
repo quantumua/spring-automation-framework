@@ -1,8 +1,8 @@
 package com.betamedia.framework.business;
 
 import com.betamedia.framework.business.runner.TestRunner;
+import com.betamedia.framework.entities.web.RunTestParams;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,10 +18,10 @@ public class RunTestHandlerImpl implements RunTestHandler {
     private List<TestRunner> runners;
 
     @Override
-    public void handle() {
-        runners.stream().filter(TestRunner::isAssignable)
+    public void handle(RunTestParams params) {
+        runners.stream().filter(runner->runner.isAssignable(params))
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("No corresponding runner"))
-                .run();
+                .run(params.getSuite());
     }
 }

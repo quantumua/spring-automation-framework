@@ -1,26 +1,23 @@
 package com.betamedia.framework.configuration.webdriver.chrome;
 
+import com.betamedia.framework.components.SUTPropertiesHolder;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriverService;
-import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 
 /**
  * Created by mbelyaev on 2/24/17.
  */
 //TODO externalize parameter constants
 @Configuration
-@ConditionalOnProperty(name = "browser.type", havingValue = BrowserType.CHROME)
 public class ChromeDriverConfig {
 
     @Bean
@@ -28,21 +25,30 @@ public class ChromeDriverConfig {
         return DesiredCapabilities.chrome();
     }
 
-    @Bean(initMethod ="start", destroyMethod = "stop")
-    @ConditionalOnMissingBean(name = "remoteDriver")
-    public ChromeDriverService chromeDriverService(@Value("${chrome.driver.path}") String chromeDriverPath) throws IOException {
+    //TODO should be a singleton in request scope, investigate how to change
+    @Bean(initMethod = "start", destroyMethod = "stop")
+    @Scope("prototype")
+    public ChromeDriverService chromeDriverService(SUTPropertiesHolder sutPropertiesHolder) throws IOException {
+        String driverPath = sutPropertiesHolder.get(SUTPropertiesHolder.CHROME_DRIVER_PATH);
         return new ChromeDriverService.Builder()
-                .usingDriverExecutable(new File(chromeDriverPath))
+                .usingDriverExecutable(new File(driverPath))
                 .usingAnyFreePort()
                 .build();
     }
 
     @Bean
     @Scope("prototype")
-    @ConditionalOnMissingBean(name = "remoteDriver")
-    public WebDriver driver(ChromeDriverService chromeDriverService, DesiredCapabilities capabilities, @Value("${domain.url}") String domainUrl) {
-        WebDriver driver = new RemoteWebDriver(chromeDriverService.getUrl(), capabilities);
-        driver.get(domainUrl);
-        return driver;
+//    @ConditionalOnMissingBean(name = "remoteDriver")
+    public WebDriver driver(DesiredCapabilities capabilities, SUTPropertiesHolder sutPropertiesHolder) throws IOException {
+        String remoteDriverUrl= sutPropertiesHolder.get(SUTPropertiesHolder.REMOTE_DRIVER_URL);
+        if(remoteDriverUrl != null){
+            return new RemoteWebDriver(new URL(remoteDriverUrl), capabilities);
+        }
+        else {
+            String domainUrl = sutPropertiesHolder.get(SUTPropertiesHolder.DOMAIN_URL);
+            WebDriver driver = new RemoteWebDriver(chromeDriverService(sutPropertiesHolder).getUrl(), capabilities);
+            driver.get(domainUrl);
+            return driver;
+        }
     }
 }

@@ -1,7 +1,7 @@
 package com.betamedia.framework.tests;
 
 
-import com.betamedia.framework.web.pages.factory.AbstractPageFactory;
+import com.betamedia.framework.pages.factory.AbstractPageFactory;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 

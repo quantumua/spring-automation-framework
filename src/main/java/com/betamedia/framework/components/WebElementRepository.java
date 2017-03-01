@@ -1,6 +1,6 @@
 package com.betamedia.framework.components;
 
-import com.betamedia.framework.web.pages.common.entities.PageElementLocation;
+import com.betamedia.framework.entities.page.PageElementLocation;
 import com.opencsv.CSVReader;
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.HeaderColumnNameMappingStrategy;

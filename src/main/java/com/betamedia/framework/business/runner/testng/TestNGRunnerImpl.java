@@ -1,8 +1,7 @@
 package com.betamedia.framework.business.runner.testng;
 
 import com.betamedia.framework.business.runner.TestRunner;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.ApplicationArguments;
+import com.betamedia.framework.entities.web.RunTestParams;
 import org.springframework.stereotype.Component;
 import org.testng.ITestNGListener;
 import org.testng.TestListenerAdapter;
@@ -17,21 +16,18 @@ import java.util.List;
 @Component
 public class TestNGRunnerImpl implements TestRunner {
 
-    @Autowired
-    private ApplicationArguments args;
-
     @Override
-    public boolean isAssignable() {
-        return !args.getNonOptionArgs().isEmpty();
+    public boolean isAssignable(RunTestParams params) {
+        return params != null;
     }
 
     @Override
-    public void run() {
+    public void run(List<String> xmlNames) {
         //read files
         ITestNGListener tla = new TestListenerAdapter();
         TestNG testng = new TestNG();
 
-        List<String> xmlNames = args.getNonOptionArgs();
+//        List<String> xmlNames = args.getNonOptionArgs();
 
         testng.setTestSuites(xmlNames);
 

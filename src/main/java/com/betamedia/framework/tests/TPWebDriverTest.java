@@ -1,8 +1,7 @@
 package com.betamedia.framework.tests;
 
 import com.betamedia.framework.configuration.AppContextHolder;
-import com.betamedia.framework.web.pages.factory.AbstractPageFactory;
-import com.betamedia.framework.web.pages.factory.TPPageFactoryImpl;
+import com.betamedia.framework.pages.factory.TPPageFactoryImpl;
 
 /**
  * @author Maksym Tsybulskyy

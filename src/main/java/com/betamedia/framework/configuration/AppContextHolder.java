@@ -18,4 +18,8 @@ public class AppContextHolder {
     public static <T> T getBean(Class<T> clazz) {
         return context.getBean(clazz);
     }
+
+    public static ConfigurableApplicationContext getContext(){
+        return context;
+    };
 }
