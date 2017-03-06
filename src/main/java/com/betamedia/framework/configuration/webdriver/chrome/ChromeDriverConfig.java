@@ -3,11 +3,17 @@ package com.betamedia.framework.configuration.webdriver.chrome;
 import com.betamedia.framework.components.SUTPropertiesHolder;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriverService;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Scope;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,13 +27,19 @@ import java.net.URL;
 public class ChromeDriverConfig {
 
     @Bean
-    public DesiredCapabilities capabilities() {
+    @Lazy
+    public DesiredCapabilities chromeCapabilities() {
         return DesiredCapabilities.chrome();
     }
 
-    //TODO should be a singleton in request scope, investigate how to change
+    @Bean
+    @Lazy
+    public DesiredCapabilities firefoxCapabilities() {
+        return DesiredCapabilities.firefox();
+    }
+
     @Bean(initMethod = "start", destroyMethod = "stop")
-    @Scope("prototype")
+    @Lazy
     public ChromeDriverService chromeDriverService(SUTPropertiesHolder sutPropertiesHolder) throws IOException {
         String driverPath = sutPropertiesHolder.get(SUTPropertiesHolder.CHROME_DRIVER_PATH);
         return new ChromeDriverService.Builder()
@@ -38,17 +50,40 @@ public class ChromeDriverConfig {
 
     @Bean
     @Scope("prototype")
-//    @ConditionalOnMissingBean(name = "remoteDriver")
-    public WebDriver driver(DesiredCapabilities capabilities, SUTPropertiesHolder sutPropertiesHolder) throws IOException {
-        String remoteDriverUrl= sutPropertiesHolder.get(SUTPropertiesHolder.REMOTE_DRIVER_URL);
-        if(remoteDriverUrl != null){
-            return new RemoteWebDriver(new URL(remoteDriverUrl), capabilities);
+    public WebDriver driver() throws IOException {
+        SUTPropertiesHolder holder = (SUTPropertiesHolder) RequestContextHolder.getRequestAttributes().getAttribute("sutPropertyHolder", RequestAttributes.SCOPE_REQUEST);
+        WebDriver driver = null;
+        String remoteDriverUrl = holder.get(SUTPropertiesHolder.REMOTE_DRIVER_URL);
+        String browserType = holder.get(SUTPropertiesHolder.BROWSER_TYPE);
+        String domainUrl = holder.get(SUTPropertiesHolder.DOMAIN_URL);
+        DesiredCapabilities capabilities = getCapabilities(browserType);
+        if (remoteDriverUrl != null) {
+            driver = new RemoteWebDriver(new URL(remoteDriverUrl), capabilities);
+        } else {
+            switch (browserType) {
+                case BrowserType.CHROME:
+                    driver = new RemoteWebDriver(chromeDriverService(holder).getUrl(), capabilities);
+                    break;
+                case BrowserType.FIREFOX:
+                    driver = new FirefoxDriver(capabilities);
+                    break;
+                default:
+            }
         }
-        else {
-            String domainUrl = sutPropertiesHolder.get(SUTPropertiesHolder.DOMAIN_URL);
-            WebDriver driver = new RemoteWebDriver(chromeDriverService(sutPropertiesHolder).getUrl(), capabilities);
+        if (driver != null) {
             driver.get(domainUrl);
-            return driver;
+        }
+        return driver;
+    }
+
+    private DesiredCapabilities getCapabilities(String browserType) {
+        switch (browserType) {
+            case BrowserType.CHROME:
+                return chromeCapabilities();
+            case BrowserType.FIREFOX:
+                return firefoxCapabilities();
+            default:
+                return null;
         }
     }
 }

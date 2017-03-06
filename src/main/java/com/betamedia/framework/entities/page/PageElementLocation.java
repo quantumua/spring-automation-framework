@@ -14,6 +14,9 @@ public class PageElementLocation {
     private String elementId;
 
     @CsvBindByName
+    private String version;
+
+    @CsvBindByName
     private String id;
 
     public String getPageObjectName() {
@@ -22,6 +25,10 @@ public class PageElementLocation {
 
     public String getElementId() {
         return elementId;
+    }
+
+    public String getVersion() {
+        return version;
     }
 
     public String getId() {

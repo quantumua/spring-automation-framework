@@ -3,17 +3,25 @@ package com.betamedia.framework.web.controllers;
 import com.betamedia.framework.business.RunTestHandler;
 import com.betamedia.framework.components.SUTPropertiesHolder;
 import com.betamedia.framework.entities.web.RunTestParams;
+import com.betamedia.framework.storage.StorageFileNotFoundException;
+import com.betamedia.framework.storage.StorageService;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Properties;
+import java.util.stream.Collectors;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
@@ -28,22 +36,59 @@ public class RunTestController {
     @Autowired
     private RunTestHandler runTestHandler;
 
-//    @Autowired
-//    private SUTPropertiesHolder sutPropertiesHolder;
-
     @Autowired
     private BeanFactory beanFactory;
+
+    @Autowired
+    private StorageService storageService;
 
     @RequestMapping(method = GET)
     public ResponseEntity<String> run(@Valid RunTestParams params) {
         try {
-            SUTPropertiesHolder sutPropertiesHolder = beanFactory.getBean(SUTPropertiesHolder.class,getProperties(params.getSut()));
-//            sutPropertiesHolder.set(getProperties(params.getSut()));
+            SUTPropertiesHolder bean = (SUTPropertiesHolder) beanFactory.getBean("scopedTarget.sutPropertiesHolder", getProperties(params.getSut()));
+            RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
+            requestAttributes.setAttribute("sutPropertyHolder", bean, RequestAttributes.SCOPE_REQUEST);
+            RequestContextHolder.setRequestAttributes(requestAttributes, true);
             runTestHandler.handle(params);
             return new ResponseEntity<>("success", HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>("fail", HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @PostMapping("/upload")
+    public ResponseEntity<String> handleFileUpload(@RequestParam("properties") MultipartFile properties,
+                                                   @RequestParam("suites[]") MultipartFile[] suites,
+                                                   @RequestParam("dataSources[]") MultipartFile[] dataSources,
+                                                   RedirectAttributes redirectAttributes) throws IOException {
+        try {
+            SUTPropertiesHolder bean = (SUTPropertiesHolder) beanFactory.getBean("scopedTarget.sutPropertiesHolder", getProperties(properties));
+            RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
+            requestAttributes.setAttribute("sutPropertyHolder", bean, RequestAttributes.SCOPE_REQUEST);
+
+            List<String> suitePaths = Arrays.stream(suites)
+                    .map(storageService::store)
+                    .collect(Collectors.toList());
+            //TODO handle no ds uploaded scenario
+            Arrays.stream(dataSources)
+                    .forEach(d -> {
+                        String path = storageService.store(d);
+                        requestAttributes.setAttribute(d.getOriginalFilename(), path, RequestAttributes.SCOPE_REQUEST);
+                    });
+
+            RequestContextHolder.setRequestAttributes(requestAttributes, true);
+
+            runTestHandler.handle(new RunTestParams(null, suitePaths, null));
+            return new ResponseEntity<>("success", HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("fail", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+    @ExceptionHandler(StorageFileNotFoundException.class)
+    public ResponseEntity handleStorageFileNotFound(StorageFileNotFoundException exc) {
+        return ResponseEntity.notFound().build();
     }
 
     private Properties getProperties(String fileName) throws IOException {
@@ -54,7 +99,6 @@ public class RunTestController {
             if (input == null) {
                 throw new RuntimeException("Sorry, unable to find " + fileName);
             }
-
             //load a properties file from class path, inside static method
             prop.load(input);
             return prop;
@@ -74,4 +118,9 @@ public class RunTestController {
 
     }
 
+    private Properties getProperties(MultipartFile uploadedProperties) throws IOException {
+        Properties properties = new Properties();
+        properties.load(uploadedProperties.getInputStream());
+        return properties;
+    }
 }

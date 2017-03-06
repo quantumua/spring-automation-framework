@@ -1,7 +1,6 @@
 package com.betamedia.framework.tests;
 
 
-import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 
 import static org.testng.Assert.assertTrue;
@@ -11,21 +10,14 @@ import static org.testng.Assert.assertTrue;
  *         Date: 2/15/17.
  */
 
-public class LoginPageTest extends TPWebDriverTest{
+public class DataDrivenLoginPageTest extends DataDrivenTPWebDriverTest{
 
-    @Test
-    public void loginTest() {
+    @Test(dataProvider = "authentication")
+    public void loginTest(String username, String password) {
         pages().topNavigationPage().logIn();
-        pages().loginPage().login("vasichka", "123123");
+        pages().loginPage().login(username, password);
         pages().disclaimerNotification().accept();
         assertTrue(pages().topNavigationPage().isLoggedIn());
-    }
-
-    @Test
-    public void failedLoginTest() {
-        pages().topNavigationPage().logIn();
-        pages().loginPage().login("randomname", "randompassword");
-        pages().loginErrorNotification().dismiss();
     }
 
    /* @Test

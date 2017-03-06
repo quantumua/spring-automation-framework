@@ -20,7 +20,6 @@ import java.util.Map;
  *         Date: 2/24/17.
  */
 @Service
-@Lazy
 @Scope("prototype")
 public class PageObjectCreatorImpl implements PageObjectCreator{
 
@@ -41,17 +40,16 @@ public class PageObjectCreatorImpl implements PageObjectCreator{
             e.printStackTrace();
             throw new RuntimeException(e);
         }
-        Map<String, String> locations = repository.getLocations(clazz.getSimpleName());
-        initWebFields(page, locations);
+        initWebFields(page);
         return page;
     }
 
-    private <T extends AbstractPageObject> void initWebFields(T page, Map<String, String> locations) {
+    private <T extends AbstractPageObject> void initWebFields(T page) {
         Field[] declaredFields = page.getClass().getDeclaredFields();
         for (Field field : declaredFields) {
             if (field.isAnnotationPresent(StoredId.class) && field.getType().isAssignableFrom(By.class)) {
                 StoredId storedId = field.getAnnotation(StoredId.class);
-                setField(field, page, By.id(locations.get(storedId.value())));
+                setField(field, page, By.id(repository.getId(page.getClass().getSimpleName(), storedId.value())));
             }
         }
     }
@@ -59,7 +57,7 @@ public class PageObjectCreatorImpl implements PageObjectCreator{
     public void closeBrowser() {
         driver.quit();
     }
-//
+
     private void setField(Field field, Object object, Object value) {
         try {
             if (Modifier.isPrivate(field.getModifiers())) {

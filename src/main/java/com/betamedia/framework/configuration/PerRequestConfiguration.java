@@ -2,10 +2,7 @@ package com.betamedia.framework.configuration;
 
 import com.betamedia.framework.components.SUTPropertiesHolder;
 import com.betamedia.framework.components.SUTPropertiesHolderImpl;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.web.context.annotation.RequestScope;
+import org.springframework.context.annotation.*;
 
 import java.util.Properties;
 
@@ -15,11 +12,11 @@ import java.util.Properties;
  */
 
 @Configuration
-@Lazy
-@RequestScope
 public class PerRequestConfiguration {
 
     @Bean
+    @Lazy
+    @Scope(scopeName = "request", proxyMode = ScopedProxyMode.TARGET_CLASS)
     public SUTPropertiesHolder sutPropertiesHolder(Properties properties) {
         return new SUTPropertiesHolderImpl(properties);
     }
