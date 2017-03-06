@@ -3,6 +3,8 @@ target/
 mvnw
 mvnw.cmd
 test-output/
+upload-dir/
+public/
 *~
 
 ### STS ###
