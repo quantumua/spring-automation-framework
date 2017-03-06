@@ -69,8 +69,9 @@ public class RunTestController {
             List<String> suitePaths = Arrays.stream(suites)
                     .map(storageService::store)
                     .collect(Collectors.toList());
-            //TODO handle no ds uploaded scenario
+
             Arrays.stream(dataSources)
+                    .filter(d -> !d.isEmpty())
                     .forEach(d -> {
                         String path = storageService.store(d);
                         requestAttributes.setAttribute(d.getOriginalFilename(), path, RequestAttributes.SCOPE_REQUEST);
